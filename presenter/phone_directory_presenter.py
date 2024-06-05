@@ -24,7 +24,4 @@ class PhoneDirectoryPresenter:
 
     def find_contact(self, search_term):
         contacts = self.model.find_contact(search_term)
-        if contacts:
-            self.view.display_contacts(contacts)
-        else:
-            self.view.show_message("Contact not found.")
+        return contacts

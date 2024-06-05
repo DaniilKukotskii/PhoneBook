@@ -16,7 +16,8 @@ class PhoneDirectory:
 
     def find_contact(self, search_term):
         search_term = search_term.lower()
-        return [contact for contact in self.contacts if search_term in contact.first_name.lower() or search_term in contact.last_name.lower()]
+        return [contact for contact in self.contacts if search_term in contact.first_name.lower() or search_term in contact.last_name.lower()
+                or search_term in contact.phone_number or search_term in contact.address.lower()]
 
     def load_contacts(self):
         contacts = []

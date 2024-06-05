@@ -46,10 +46,18 @@ class PhoneDirectoryView:
         self.presenter.load_contacts()
 
     def find_contact(self):
-        search_term = input("Enter name or part of name to find: ")
+        search_term = input("Enter name, phone number, or address to find (or type 'cancel' to cancel): ")
+        if search_term.lower() == 'cancel':
+            return
         found_contacts = self.presenter.find_contact(search_term)
-        print(f"Found contacts: {found_contacts}\n")
+        if found_contacts:
+            print("\nFound contacts:")
+            self.display_contacts(found_contacts)
+        else:
+            self.show_message("Contact not found.")
 
     def remove_contact(self):
-        search_term = input("Enter name or part of name to remove: ")
+        search_term = input("Enter name, phone number, or address to remove (or type 'cancel' to cancel): ")
+        if search_term.lower() == 'cancel':
+            return
         self.presenter.remove_contact(search_term)
