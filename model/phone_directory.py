@@ -1,4 +1,5 @@
 import csv
+import difflib
 from model.contact import Contact
 
 class PhoneDirectory:
@@ -16,8 +17,19 @@ class PhoneDirectory:
 
     def find_contact(self, search_term):
         search_term = search_term.lower()
-        return [contact for contact in self.contacts if search_term in contact.first_name.lower() or search_term in contact.last_name.lower()
-                or search_term in contact.phone_number or search_term in contact.address.lower()]
+        matching_contacts = []
+        for contact in self.contacts:
+            first_name_ratio = difflib.SequenceMatcher(None, search_term, contact.first_name.lower()).ratio()
+            last_name_ratio = difflib.SequenceMatcher(None, search_term, contact.last_name.lower()).ratio()
+            address_ratio = difflib.SequenceMatcher(None, search_term, contact.address.lower()).ratio()
+
+            # Exact match for phone number
+            phone_number_match = search_term in contact.phone_number
+
+            if phone_number_match or any(ratio > 0.6 for ratio in [first_name_ratio, last_name_ratio, address_ratio]):
+                matching_contacts.append(contact)
+                
+        return matching_contacts
 
     def load_contacts(self):
         contacts = []
@@ -30,7 +42,7 @@ class PhoneDirectory:
                     else:
                         print("Invalid row found in CSV:", row)
         except FileNotFoundError:
-            pass  # Файл не найден, возвращаем пустой список контактов
+            pass  # The file was not found, we return an empty contact list
         return contacts
 
     def save_contacts(self):
